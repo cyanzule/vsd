@@ -12,3 +12,7 @@ Description: Provides a shim command for survival analysis graphic generation.
 License: MIT + file LICENCE
 Encoding: UTF-8
 LazyData: true
+Imports: 
+    survival,
+    ggplot2
+RoxygenNote: 6.1.1
