@@ -8,6 +8,7 @@ Authors@R:
            email = "2016711@student.uma.pt",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: Provides a shim command for survival analysis graphic generation.
-License: MIT
+    This should work with most `survival`...
+License: MIT + file LICENCE
 Encoding: UTF-8
 LazyData: true
