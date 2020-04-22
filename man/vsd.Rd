@@ -4,15 +4,27 @@
 \alias{vsd}
 \title{Visualizing Survival Data}
 \usage{
-vsd(data = c())
+vsd(
+  surv,
+  terms = NULL,
+  weights = NULL,
+  subset = NULL,
+  xlab = "",
+  ylab = "Survival probability",
+  legend = NULL
+)
 }
 \arguments{
-\item{data}{The input data}
+\item{surv}{The input Survival object, from Surv() (left side of the input function on survfit.formula)}
+
+\item{terms}{Factor that "buckets" the individuals (right side of the function on survfit.formula)}
 }
 \description{
-This function tries to guess the best format to render the inputted survival data analysis data into a graphically pleasing output, while also explaining any data processing that has occured during the way.
-Or it will one day, for now it only goes "Bloop!"
+This function tries to guess the best format to render the inputted
+ survival data analysis data into a graphically pleasing output, while
+ also explaining any data processing that has occured during the way.
+Or it will one day, for now it only goes `plot()`.
 }
 \examples{
-whoded()
+vsd(Surv(...)): Does a Keplein-Meyer survival fit, also displays a smooth hazard line if possible
 }

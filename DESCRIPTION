@@ -1,6 +1,6 @@
 Package: vsd
-Title: Graphical Shim For Survival Analysis
-Version: 0.0.0.9000
+Title: Graphical Shim For Visual Survival Data Analysis
+Version: 0.0.0.9001
 Authors@R: 
     person(given = "Daniel",
            family = "Camacho",
@@ -14,5 +14,6 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     survival,
-    ggplot2
-RoxygenNote: 6.1.1
+    ggplot2,
+    muhaz
+RoxygenNote: 7.1.0
