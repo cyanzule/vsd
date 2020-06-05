@@ -4,27 +4,26 @@
 \alias{vsd}
 \title{Visualizing Survival Data}
 \usage{
-vsd(
-  surv,
-  terms = NULL,
-  weights = NULL,
-  subset = NULL,
-  xlab = "",
-  ylab = "Survival probability",
-  legend = NULL
-)
+vsd(fit, data = NULL, ...)
 }
 \arguments{
-\item{surv}{The input Survival object, from Surv() (left side of the input function on survfit.formula)}
+\item{fit}{The estimated survival curve for the model, defaults to a single Kaplain-Meyer estimation of \code{"surv"}}
 
-\item{terms}{Factor that "buckets" the individuals (right side of the function on survfit.formula)}
+\item{\dots}{Optional arguments to be passed to graphic generation}
+
+\item{surv}{The input Survival object, from \code{"Surv()"}}
 }
 \description{
-This function tries to guess the best format to render the inputted
- survival data analysis data into a graphically pleasing output, while
- also explaining any data processing that has occured during the way.
-Or it will one day, for now it only goes `plot()`.
+This function tries to guess the best format to render the inputted survival data analysis data into a graphically pleasing output, while also explaining any data processing that has occured during the way.
+Or it will one day, for now it only goes \code{"plot()"}.
 }
 \examples{
-vsd(Surv(...)): Does a Keplein-Meyer survival fit, also displays a smooth hazard line if possible
+# non-models are cohersed into a survfit with default arguments
+vsd(with(aml, Surv(time, status)))
+vsd(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon))
+
+# example of models (with a repeated coxph)
+vsd(survfit(Surv(futime, fustat) ~ rx, data = ovarian))
+vsd(survfit(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon)), colon)
+vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group, data = flexsurv::bc, dist = "gengamma"))
 }

@@ -1,6 +1,6 @@
 Package: vsd
 Title: Graphical Shim For Visual Survival Data Analysis
-Version: 0.0.0.9001
+Version: 0.0.0.9003
 Authors@R: 
     person(given = "Daniel",
            family = "Camacho",
@@ -9,11 +9,14 @@ Authors@R:
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: Provides a shim command for survival analysis graphic generation.
     This should work with most `survival`...
-License: MIT + file LICENCE
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-Imports: 
+Depends:
     survival,
-    ggplot2,
+    ggplot2
+Imports: 
+    survminer,
+    ggpubr,
     muhaz
 RoxygenNote: 7.1.0
