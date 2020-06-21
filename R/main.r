@@ -1,10 +1,13 @@
 #' Visualizing Survival Data
 #'
-#' This function tries to guess the best format to render the inputted survival data analysis data into a graphically pleasing output, while also explaining any data processing that has occured during the way.
-#' Or it will one day, for now it only goes \code{"plot()"}.
+#' This function tries to guess the best format to render the inputted survival
+#' data analysis data into a graphically pleasing output, while also explaining
+#' any data processing that has occured during the way. Or it will one day, for
+#' now it only goes \code{"plot()"}.
 #' @import survival
 #' @param surv The input Survival object, from \code{"Surv()"}
-#' @param fit The estimated survival curve for the model, defaults to a single Kaplain-Meyer estimation of \code{"surv"}
+#' @param fit The estimated survival curve for the model, defaults to a single
+#'   Kaplain-Meyer estimation of \code{"surv"}
 #' @param \dots Optional arguments to be passed to graphic generation
 #' @export
 #' @examples
@@ -28,7 +31,7 @@ vsd <- function(fit, data = NULL, ...) {
     data <- as.data.frame(as.matrix(fit))
 
     formula <- Surv(time, status) ~ 1
-    fit <- survfit(formula, data)
+    fit <- survfit(formula = formula, data = data)
     model <- model.frame(formula, data)
     strata <- NULL
     subset <- NULL
@@ -42,9 +45,9 @@ vsd <- function(fit, data = NULL, ...) {
     }
 
     formula <- fit.original$formula
-    fit <- survfit(fit.original, data)
+    fit <- survfit(formula = fit.original, data = data)
     model <- model.frame(formula, data)
-    strata <- .getStrata(formula, model)
+    strata <- getStrata(formula, model)
     subset <- NULL # TODO: is this true?
   }
 
@@ -69,7 +72,7 @@ vsd <- function(fit, data = NULL, ...) {
         model <- model.frame(formula, data)
       }
 
-      strata <- .getStrata(formula, model)
+      strata <- getStrata(formula, model)
     }
 
     subset <- fit$subset
@@ -86,12 +89,20 @@ vsd <- function(fit, data = NULL, ...) {
     # TODO: remake
     requireNamespace("survminer", quietly = TRUE)
 
-    if(is.null(strata)) {
-      if(inherits(formula, "coxph")) {
+    if(inherits(formula, "coxph")) {
+      if(!is.null(strata)) {
+        # strategy: remake formula coxph with strata removed
+        # (using call and grep, 'optional:(+\w*)?strata\(.+\)' with '')
+        # then do several ggforests, using the strata to filter the *data* off
+
+        fit.strataless <- deparse(formula$call)
+        fit.strataless <- str2expression(gsub('(\\+\\s)?strata\\(.+\\)', '', fit.strataless))
+        fit.strataless <- eval(fit.strataless)
+        print(fit.strataless)
+      } else {
         plots$forest <- survminer::ggforest(formula, data)
       }
     }
-
 
     #### PLOT$HAZARD
     requireNamespace("muhaz", quietly = TRUE)
@@ -103,10 +114,7 @@ vsd <- function(fit, data = NULL, ...) {
 
       plots$hazard <- ggplot2::ggplot(hazard.df, ggplot2::aes(x, y, color=I(2)))
     } else {
-      # TODO: do several muhaz's
-      # append each table, with a schema factor (which increments)
-      # that way you hand-craft the melted input table
-      # then it's as easy as doing color=schema
+      # make several separate hazard maps
       hazard.df <- data.frame(x = numeric(), y = numeric(), strata = numeric())
 
       for (i in levels(strata)) {
@@ -138,30 +146,3 @@ vsd <- function(fit, data = NULL, ...) {
 }
 
 
-.getStrata <- function(formula, model) {
-  if(inherits(formula, "coxph")) {
-    # discards any columns not starting with strata()
-    # assumedly it's only one but...
-    columns <- which(grepl("^strata\\(", colnames(model)))
-    if(length(columns) > 1) {
-      return(strata(model[, columns]))
-    } else if (length(columns) == 1) {
-      return(model[, columns])
-    }
-  } else {
-    # discard the left side (which is always the Surv object)
-    if(ncol(model) > 1) {
-      return(strata(model[, -1]))
-    }
-  }
-}
-
-
-# eval(survfit(...)$call$formula)
-
-
-# todo next time:
-## do parametric estimation (as in the book)
-##
-## check surCurve: plots survival models from the survival package and curves of multistate model from the mstate package
-## check survMisc

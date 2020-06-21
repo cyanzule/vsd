@@ -7,15 +7,18 @@
 vsd(fit, data = NULL, ...)
 }
 \arguments{
-\item{fit}{The estimated survival curve for the model, defaults to a single Kaplain-Meyer estimation of \code{"surv"}}
+\item{fit}{The estimated survival curve for the model, defaults to a single
+Kaplain-Meyer estimation of \code{"surv"}}
 
 \item{\dots}{Optional arguments to be passed to graphic generation}
 
 \item{surv}{The input Survival object, from \code{"Surv()"}}
 }
 \description{
-This function tries to guess the best format to render the inputted survival data analysis data into a graphically pleasing output, while also explaining any data processing that has occured during the way.
-Or it will one day, for now it only goes \code{"plot()"}.
+This function tries to guess the best format to render the inputted survival
+data analysis data into a graphically pleasing output, while also explaining
+any data processing that has occured during the way. Or it will one day, for
+now it only goes \code{"plot()"}.
 }
 \examples{
 # non-models are cohersed into a survfit with default arguments
