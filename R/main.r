@@ -44,7 +44,7 @@ vsd <- function(fit, data = NULL, ...) {
       }
     }
 
-    formula <- fit.original$formula
+    formula <- fit.original
     fit <- survfit(formula = fit.original, data = data)
     model <- model.frame(formula, data)
     strata <- getStrata(formula, model)
@@ -95,10 +95,21 @@ vsd <- function(fit, data = NULL, ...) {
         # (using call and grep, 'optional:(+\w*)?strata\(.+\)' with '')
         # then do several ggforests, using the strata to filter the *data* off
 
-        fit.strataless <- deparse(formula$call)
-        fit.strataless <- str2expression(gsub('(\\+\\s)?strata\\(.+\\)', '', fit.strataless))
-        fit.strataless <- eval(fit.strataless)
-        print(fit.strataless)
+        plots$forest <- list()
+
+        fit.expression <- deparse(formula$call)
+        fit.expression <- str2expression(gsub('\\+?\\s?(strata\\(.+\\)) ', '', fit.expression))
+
+        fit.strataless <- eval(fit.expression)
+
+        plots$forest[[1]] <- survminer::ggforest(fit.strataless, data) + labs(x = "Hazard ratio (whole strata)")
+
+        for (i in levels(strata)) {
+          # does a forest for each strata, separatedly!
+          subdata <- data[strata == i,]
+          fit.expression[[1]]$data <- subdata
+          plots$forest[[i]] <- survminer::ggforest(eval(fit.expression), subdata) + labs(x = paste("Hazard ratio (strata =", i, ")"))
+        }
       } else {
         plots$forest <- survminer::ggforest(formula, data)
       }

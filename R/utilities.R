@@ -17,6 +17,7 @@ getStrata <- function(formula, model) {
       return(model[, columns])
     }
   } else {
+    # the whole right side of the formula IS the strata
     # discard the left side (which is always the Surv object)
     if(ncol(model) > 1) {
       return(strata(model[, -1]))
