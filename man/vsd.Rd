@@ -26,14 +26,13 @@ now it only goes \code{"plot()"}.
 # non-models are cohersed into a survfit with default arguments
 \dontrun{
 vsd(with(aml, Surv(time, status)))
-vsd(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon))
 }
 
 # survival fit model
 vsd(survfit(Surv(futime, fustat) ~ rx, data = ovarian))
 
 # coxph (with and without strata)
-vsd(survfit(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon)), colon)
+vsd(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon))
 vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere, data = colon)), colon)
 
 # parametric models
