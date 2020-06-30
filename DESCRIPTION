@@ -1,6 +1,6 @@
 Package: vsd
 Title: Graphical Shim For Visual Survival Data Analysis
-Version: 0.0.0.9004
+Version: 0.0.0.9005
 Authors@R: 
     person(given = "Daniel",
            family = "Camacho",

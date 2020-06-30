@@ -7,12 +7,14 @@
 vsd(fit, data = NULL, ...)
 }
 \arguments{
-\item{fit}{The estimated survival curve for the model, defaults to a single
-Kaplain-Meyer estimation of \code{"surv"}}
+\item{fit}{The estimated survival curve for the model, defaults to a single}
 
-\item{\dots}{Optional arguments to be passed to graphic generation}
+\item{data}{Dataframe from where the model fetches its variable, if left blank will be extracted from the model, if possible}
 
-\item{surv}{The input Survival object, from \code{"Surv()"}}
+\item{...}{Kaplain-Meyer estimation of \code{"surv"}}
+}
+\value{
+A list of graphs, relevant to the model
 }
 \description{
 This function tries to guess the best format to render the inputted survival
@@ -22,11 +24,18 @@ now it only goes \code{"plot()"}.
 }
 \examples{
 # non-models are cohersed into a survfit with default arguments
+\dontrun{
 vsd(with(aml, Surv(time, status)))
 vsd(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon))
+}
 
-# example of models (with a repeated coxph)
+# survival fit model
 vsd(survfit(Surv(futime, fustat) ~ rx, data = ovarian))
+
+# coxph (with and without strata)
 vsd(survfit(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon)), colon)
+vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere, data = colon)), colon)
+
+# parametric models
 vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group, data = flexsurv::bc, dist = "gengamma"))
 }

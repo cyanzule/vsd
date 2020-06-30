@@ -7,7 +7,9 @@
 getStrata(formula, model)
 }
 \arguments{
-\item{model}{}
+\item{formula}{Formula}
+
+\item{model}{Data (shouldn't be named model...)}
 }
 \value{
 

@@ -4,20 +4,29 @@
 #' data analysis data into a graphically pleasing output, while also explaining
 #' any data processing that has occured during the way. Or it will one day, for
 #' now it only goes \code{"plot()"}.
-#' @import survival
-#' @param surv The input Survival object, from \code{"Surv()"}
+#'
 #' @param fit The estimated survival curve for the model, defaults to a single
-#'   Kaplain-Meyer estimation of \code{"surv"}
-#' @param \dots Optional arguments to be passed to graphic generation
+#' @param data Dataframe from where the model fetches its variable, if left blank will be extracted from the model, if possible
+#' @param ... Kaplain-Meyer estimation of \code{"surv"}
+#' @import survival
+#' @import ggplot2
 #' @export
+#' @return A list of graphs, relevant to the model
 #' @examples
 #' # non-models are cohersed into a survfit with default arguments
+#' \dontrun{
 #' vsd(with(aml, Surv(time, status)))
 #' vsd(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon))
+#' }
 #'
-#' # example of models (with a repeated coxph)
+#' # survival fit model
 #' vsd(survfit(Surv(futime, fustat) ~ rx, data = ovarian))
+#'
+#' # coxph (with and without strata)
 #' vsd(survfit(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon)), colon)
+#' vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere, data = colon)), colon)
+#'
+#' # parametric models
 #' vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group, data = flexsurv::bc, dist = "gengamma"))
 vsd <- function(fit, data = NULL, ...) {
   plots <- list()
@@ -102,13 +111,15 @@ vsd <- function(fit, data = NULL, ...) {
 
         fit.strataless <- eval(fit.expression)
 
-        plots$forest[[1]] <- survminer::ggforest(fit.strataless, data) + labs(x = "Hazard ratio (whole strata)")
+        plots$forest <- survminer::ggforest(fit.strataless, data, main = "Hazard ratio (all datapoints)")
+
+        plots$forest.strata
 
         for (i in levels(strata)) {
           # does a forest for each strata, separatedly!
           subdata <- data[strata == i,]
           fit.expression[[1]]$data <- subdata
-          plots$forest[[i]] <- survminer::ggforest(eval(fit.expression), subdata) + labs(x = paste("Hazard ratio (strata =", i, ")"))
+          plots$forest.strata[[i]] <- survminer::ggforest(eval(fit.expression), subdata, main = paste("Hazard ratio (", i, ")", sep = ""))
         }
       } else {
         plots$forest <- survminer::ggforest(formula, data)
@@ -148,7 +159,7 @@ vsd <- function(fit, data = NULL, ...) {
   } else if(inherits(fit, "flexsurvreg")) {
     requireNamespace("flexsurv", quietly = TRUE)
 
-    plots$fit <- survminer::ggflexsurvplot(fit, model.frame(fit), ...)
+    plots$fit <- survminer::ggflexsurvplot(fit, data, ...)
   } else {
     stop("Unknown survival model structure " + names(fit) + " in fit")
   }
