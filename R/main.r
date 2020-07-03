@@ -291,6 +291,8 @@ vsd <-
             } else {
               print(plotly::ggplotly(plot))
             }
+          } else {
+            print(plot)
           }
         } else {
           print(plot)
