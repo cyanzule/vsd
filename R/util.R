@@ -1,10 +1,5 @@
-#' Title
-#'
-#' @param formula TBD
-#' @param model TBD
-#'
-#' @return
-getStrata <- function(formula, model) {
+# gets strata factor from formula and its respective model
+get_strata <- function(formula, model) {
   if (inherits(formula, "coxph")) {
     # discards any columns not starting with strata()
     # assumedly it's only one but...
@@ -26,18 +21,12 @@ getStrata <- function(formula, model) {
   }
 }
 
-
-#' Title
-#'
-#' @param plots TBD
-#'
-#' @return
-unlistPlots <- function(plots) {
+# flattens list of graphs (as ggplots are also lists, can't just use unlist)
+unlist_plots <- function(plots) {
   result <- list()
 
   for (name in names(plots)) {
     item <- plots[[name]]
-
 
     if (inherits(item, c("ggplot", "ggsurvplot"))) {
       result[[name]] <- list(item)

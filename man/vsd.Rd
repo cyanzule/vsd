@@ -25,6 +25,8 @@ blank will be extracted from the model, if possible}
 
 \item{xlab}{Label for the x axis, shared among all relevant graphs}
 
+\item{size}{Line with with graphs}
+
 \item{color}{Color(s) used for graphs}
 
 \item{interactive}{Allows to explore the generated graphs before returning

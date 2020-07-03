@@ -13,6 +13,7 @@
 #' @param main Main title for the graphs, defaults to $fit if only one is given
 #' @param xlab Label for the x axis, shared among all relevant graphs
 #' @param color Color(s) used for graphs
+#' @param size Line with with graphs
 #' @param interactive Allows to explore the generated graphs before returning
 #'   (use with \code{"plotly"} for best results)
 #' @param ... Miscellaneous arguments, passed to ALL graphs
@@ -51,8 +52,8 @@ vsd <-
     model <- NULL
 
     # constructs default-option survival models from common survival-related objects
-    fit.original <- fit
-    if (inherits(fit.original, 'Surv')) {
+    fit_original <- fit
+    if (inherits(fit_original, 'Surv')) {
       # Surv object
       # TODO: more than just right-censored survival
       data <- as.data.frame(as.matrix(fit))
@@ -64,23 +65,23 @@ vsd <-
       subset <- NULL
 
       fit$call$formula <- eval(fit$call$formula, data)
-    } else if (is.call(fit.original)) {
+    } else if (is.call(fit_original)) {
       # (Assumedly) '~' call (TODO: fail first?)
       if (is.null(data)) {
         # stop("Data structure required with fit object of type call.")
       }
 
-      formula <- eval(fit.original, data)
+      formula <- eval(fit_original, data)
       fit <- survfit(formula = formula, data = data)
       model <- model.frame(formula, data)
-      strata <- getStrata(formula, model)
+      strata <- get_strata(formula, model)
       subset <- NULL
 
       fit$call$formula <- eval(fit$call$formula, data)
-    } else if (inherits(fit.original, "coxph")) {
+    } else if (inherits(fit_original, "coxph")) {
       # coxph object
       if (is.null(data)) {
-        data <- eval(fit.original$call$data)
+        data <- eval(fit_original$call$data)
         if (is.null(data)) {
           stop(
             "Original data structure couldn't be extracted, supply it to function call instead"
@@ -88,10 +89,10 @@ vsd <-
         }
       }
 
-      fit <- survfit(formula = fit.original, data = data)
-      formula <- fit.original
+      fit <- survfit(formula = fit_original, data = data)
+      formula <- fit_original
       model <- model.frame(formula, data)
-      strata <- getStrata(formula, model)
+      strata <- get_strata(formula, model)
       subset <- NULL # TODO: is this true?
     }
 
@@ -127,12 +128,12 @@ vsd <-
           model <- model.frame(formula, data)
         }
 
-        strata <- getStrata(formula, model)
+        strata <- get_strata(formula, model)
       }
 
       subset <- fit$subset
       surv <- as.data.frame(as.matrix(model[, 1]))
-      surv.type <- fit$type
+      surv_type <- fit$type
 
       #### PLOT$FIT
       # plots$fit <- survminer::ggsurvplot(fit, data, surv.median.line = "hv", main = main, xlab = xlab, ...)
@@ -147,7 +148,6 @@ vsd <-
           ggtheme = ggpubr::theme_pubr(),
           ...
         )
-      # plots$fit$plot <- plots$fit$plot + ggpubr::theme_pubr()
 
 
       #### PLOT$FOREST (for coxph)
@@ -159,23 +159,23 @@ vsd <-
 
           plots$forest <- list()
 
-          fit.expression <- deparse(formula$call)
-          fit.expression <-
-            str2expression(gsub('\\+?\\s?(strata\\(.+\\)) ', '', fit.expression))
+          fit_expression <- deparse(formula$call)
+          fit_expression <-
+            str2expression(gsub('\\+?\\s?(strata\\(.+\\)) ', '', fit_expression))
 
-          fit.strataless <- eval(fit.expression)
+          fit_strataless <- eval(fit_expression)
 
           plots$forest <-
-            survminer::ggforest(fit.strataless, data, main = "Hazard ratio (all datapoints)")
+            survminer::ggforest(fit_strataless, data, main = "Hazard ratio (all datapoints)")
 
           plots$forest.strata
 
           for (i in levels(strata)) {
             # does a forest for each strata, separatedly!
             subdata <- data[strata == i, ]
-            fit.expression[[1]]$data <- subdata
+            fit_expression[[1]]$data <- subdata
             plots$forest.strata[[i]] <-
-              survminer::ggforest(eval(fit.expression),
+              survminer::ggforest(eval(fit_expression),
                                   subdata,
                                   main = paste("Hazard ratio (", i, ")", sep = ""))
           }
@@ -188,24 +188,26 @@ vsd <-
       if (is.null(strata)) {
         # make a simple muhaz graphic
         hazard <- muhaz::muhaz(surv$time, surv$status)
-        hazard.df <-
+        hazard_df <-
           data.frame(
             x = hazard$est.grid,
             y = hazard$haz.est,
-            strata = factor(rep("All", length(hazard$est.grid)))
+            strata = factor(rep("All", length(
+              hazard$est.grid
+            )))
           )
       } else {
         # make several separate hazard maps
-        hazard.df <-
+        hazard_df <-
           data.frame(x = numeric(),
                      y = numeric(),
                      strata = numeric())
 
-        hazard.count <- table(strata)
+        hazard_count <- table(strata)
 
         for (i in levels(strata)) {
           # TODO: is it always ten?
-          if (hazard.count[[i]] < 10) {
+          if (hazard_count[[i]] < 10) {
             warning(
               "Level ",
               i,
@@ -217,25 +219,28 @@ vsd <-
             # creates a sub-table with each muhaz graphic, appends the corresponding strata
             hazard <-
               muhaz::muhaz(surv$time, surv$status, strata == i)
-            hazard.df.level <-
+            hazard_df_level <-
               data.frame(
                 x = hazard$est.grid,
                 y = hazard$haz.est,
                 strata = rep(i, length(hazard$est.grid))
               )
-            hazard.df <- rbind(hazard.df, hazard.df.level)
+            hazard_df <- rbind(hazard_df, hazard_df_level)
           }
         }
 
-        hazard.df$strata <- factor(hazard.df$strata, levels(strata))
+        hazard_df$strata <- factor(hazard_df$strata, levels(strata))
       }
 
-      plot.hazard <-
-        ggplot(hazard.df, aes(x = x, y = y, color = strata)) + geom_line(size = size)
+      hazard_plot <-
+        ggplot(hazard_df,
+               aes(x,
+                   y,
+                   color = strata)) + geom_line(size = size)
 
       plots$hazard <-
         ggpubr::ggpar(
-          plot.hazard,
+          hazard_plot,
           xlab = xlab,
           ylab = "Hazard rate",
           legend.title = "Strata",
@@ -246,39 +251,41 @@ vsd <-
 
     } else if (inherits(fit, "flexsurvreg")) {
       plots$fit <-
-        survminer::ggflexsurvplot(fit,
-                                  data,
-                                  xlab = xlab,
-                                  size = size,
-                                  palette = color,
-                                  ggtheme = ggpubr::theme_pubr(),
-                                  ...)
+        survminer::ggflexsurvplot(
+          fit,
+          data,
+          xlab = xlab,
+          size = size,
+          palette = color,
+          ggtheme = ggpubr::theme_pubr(),
+          ...
+        )
 
 
     } else {
-      types <- names(fit.original)
+      types <- names(fit_original)
       if (is.null(types)) {
-        types <- typeof(fit.original)
+        types <- typeof(fit_original)
       }
 
-      stop("Unknown fit type: [", types, "] ", quote(fit.original))
+      stop("Unknown fit type: [", types, "] ", quote(fit_original))
     }
 
     if (interactive && interactive()) {
-      choices <- unlistPlots(plots)
-      choices.whitelist <- c("fit", "hazard")
+      choices <- unlist_plots(plots)
+      whitelist <- c("fit", "hazard")
 
       repeat {
         choice <-
           utils::menu(names(choices), title = "Pick a graphic (or 0 to exit)")
         if (choice <= 0)
           break
-        choice.name <- names(choices)[[choice]]
+        choice_name <- names(choices)[[choice]]
 
         plot <- choices[[choice]]
 
-        if(choice.name %in% choices.whitelist) {
-          if (requireNamespace("plotly")) {
+        if (choice_name %in% whitelist) {
+          if (requireNamespace("plotly", quietly = TRUE)) {
             if (inherits(plot, "ggsurvplot")) {
               print(plotly::ggplotly(plot$plot))
             } else {
