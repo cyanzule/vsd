@@ -3,3 +3,4 @@
 export(vsd)
 import(ggplot2)
 import(survival)
+importFrom(stats,model.frame)

@@ -4,14 +4,33 @@
 \alias{vsd}
 \title{Visualizing Survival Data}
 \usage{
-vsd(fit, data = NULL, ...)
+vsd(
+  fit,
+  data = NULL,
+  main = NULL,
+  xlab = "Time",
+  size = 1,
+  color = NULL,
+  interactive = FALSE,
+  ...
+)
 }
 \arguments{
 \item{fit}{The estimated survival curve for the model, defaults to a single}
 
-\item{data}{Dataframe from where the model fetches its variable, if left blank will be extracted from the model, if possible}
+\item{data}{Dataframe from where the model fetches its variable, if left
+blank will be extracted from the model, if possible}
 
-\item{...}{Kaplain-Meyer estimation of \code{"surv"}}
+\item{main}{Main title for the graphs, defaults to $fit if only one is given}
+
+\item{xlab}{Label for the x axis, shared among all relevant graphs}
+
+\item{color}{Color(s) used for graphs}
+
+\item{interactive}{Allows to explore the generated graphs before returning
+(use with \code{"plotly"} for best results)}
+
+\item{...}{Miscellaneous arguments, passed to ALL graphs}
 }
 \value{
 A list of graphs, relevant to the model
@@ -20,21 +39,25 @@ A list of graphs, relevant to the model
 This function tries to guess the best format to render the inputted survival
 data analysis data into a graphically pleasing output, while also explaining
 any data processing that has occured during the way. Or it will one day, for
-now it only goes \code{"plot()"}.
+now it only goes \code{"survplot()"} on most objects.
+}
+\details{
+More info will come here soon.
 }
 \examples{
-# non-models are cohersed into a survfit with default arguments
-\dontrun{
+# non-models are cohersed into a survfit object with default arguments
 vsd(with(aml, Surv(time, status)))
-}
+vsd(Surv(time, status) ~ ph.ecog, data=lung)
 
 # survival fit model
 vsd(survfit(Surv(futime, fustat) ~ rx, data = ovarian))
 
 # coxph (with and without strata)
 vsd(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon))
-vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere, data = colon)), colon)
+vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere,
+            data = colon)))
 
 # parametric models
-vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group, data = flexsurv::bc, dist = "gengamma"))
+vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group,
+                          data = flexsurv::bc, dist = "gengamma"))
 }

@@ -1,6 +1,6 @@
 Package: vsd
 Title: Graphical Shim For Visual Survival Data Analysis
-Version: 0.0.0.9006
+Version: 0.0.0.9007
 Authors@R: 
     person(given = "Daniel",
            family = "Camacho",
@@ -17,6 +17,9 @@ Depends:
     ggplot2
 Imports: 
     survminer,
+    flexsurv,
     ggpubr,
     muhaz
+Suggested:
+    plotly
 RoxygenNote: 7.1.0
