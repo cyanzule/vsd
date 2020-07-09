@@ -10,10 +10,7 @@
 #' @param fit The estimated survival curve for the model, defaults to a single
 #' @param data Dataframe from where the model fetches its variable, if left
 #'   blank will be extracted from the model, if possible
-#' @param main Main title for the graphs, defaults to $fit if only one is given
-#' @param xlab Label for the x axis, shared among all relevant graphs
-#' @param color Color(s) used for graphs
-#' @param size Line with with graphs
+#' @param arguments Collection of list of arguments, indexed by the specific type of graph they should be passed to, has priority over \dots
 #' @param interactive Allows to explore the generated graphs before returning
 #'   (use with \code{'plotly'} for best results)
 #' @param ... Miscellaneous arguments, passed to ALL graphs
@@ -205,7 +202,7 @@ vsd <-
 
 # Generates forest plots for coxph model (more than one if strata isn't null)
 plot_forest <-
-  function(formula, data, strata, title, ...) {
+  function(formula, data, strata = NULL, title, ...) {
     plots <- list()
 
     if (!is.null(strata)) {
@@ -239,7 +236,7 @@ plot_forest <-
   }
 
 # Generates hazard plot
-plot_hazard <- function(surv, strata, size, ...) {
+plot_hazard <- function(surv, strata = NULL, size, ...) {
   plots <- list()
 
   if (is.null(strata)) {

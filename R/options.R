@@ -1,13 +1,11 @@
 #' Title
 #'
-#' @param object
-#' @param arguments
-#' @param append
-#' @param ...
+#' @param object String identifying the type of graph
+#' @param prepend Additional arguments to put at the start of the list
+#' @param arguments Graph-specific arguments (from function call)
+#' @param ... General arguments (from function call)
 #'
 #' @return
-#'
-#' @examples
 get_options <- function(object, prepend = list(), arguments, ...)  {
   preset_default <-
     list(

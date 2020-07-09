@@ -4,16 +4,7 @@
 \alias{vsd}
 \title{Visualizing Survival Data}
 \usage{
-vsd(
-  fit,
-  data = NULL,
-  main = NULL,
-  xlab = "Time",
-  size = 1,
-  color = NULL,
-  interactive = FALSE,
-  ...
-)
+vsd(fit, data = NULL, arguments = list(), interactive = FALSE, ...)
 }
 \arguments{
 \item{fit}{The estimated survival curve for the model, defaults to a single}
@@ -21,16 +12,10 @@ vsd(
 \item{data}{Dataframe from where the model fetches its variable, if left
 blank will be extracted from the model, if possible}
 
-\item{main}{Main title for the graphs, defaults to $fit if only one is given}
-
-\item{xlab}{Label for the x axis, shared among all relevant graphs}
-
-\item{size}{Line with with graphs}
-
-\item{color}{Color(s) used for graphs}
+\item{arguments}{Collection of list of arguments, indexed by the specific type of graph they should be passed to, has priority over \dots}
 
 \item{interactive}{Allows to explore the generated graphs before returning
-(use with \code{"plotly"} for best results)}
+(use with \code{'plotly'} for best results)}
 
 \item{...}{Miscellaneous arguments, passed to ALL graphs}
 }
@@ -41,7 +26,7 @@ A list of graphs, relevant to the model
 This function tries to guess the best format to render the inputted survival
 data analysis data into a graphically pleasing output, while also explaining
 any data processing that has occured during the way. Or it will one day, for
-now it only goes \code{"survplot()"} on most objects.
+now it only goes \code{'survplot()'} on most objects.
 }
 \details{
 More info will come here soon.
@@ -61,5 +46,5 @@ vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere,
 
 # parametric models
 vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group,
-                          data = flexsurv::bc, dist = "gengamma"))
+                          data = flexsurv::bc, dist = 'gengamma'))
 }
