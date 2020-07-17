@@ -3,4 +3,5 @@
 export(vsd)
 import(ggplot2)
 import(survival)
+importFrom(magrittr,"%>%")
 importFrom(stats,model.frame)

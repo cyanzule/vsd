@@ -1,13 +1,13 @@
-#' Title
+#' VSD Options (Internal)
 #'
-#' @param object String identifying the type of graph
-#' @param prepend Additional arguments to put at the start of the list
-#' @param arguments Graph-specific arguments (from function call)
-#' @param ... General arguments (from function call)
+#' Generates lists of lists of options for each graph type, from function call
 #'
-#' @return
-get_options <- function(object, prepend = list(), arguments, ...)  {
-  preset_default <-
+#' @param arguments Graph-specific arguments
+#' @param ... General arguments
+#'
+#' @return List of list of graph options
+.options <- function(arguments = list(), ...)  {
+  preset_ggpar <-
     list(
       main = NULL,
       title = NULL,
@@ -16,19 +16,24 @@ get_options <- function(object, prepend = list(), arguments, ...)  {
       xlab = "Time",
       legend.title = "Strata",
       size = 1,
+      linetype = NULL,
+      alpha = 1,
       color = NULL,
       palette = NULL,
       ggtheme = ggpubr::theme_pubr()
-
     )
-
   preset_ggsurv <-
-    append(preset_default,
+    append(preset_ggpar,
            list(
+             ylab = NULL,
              censor = NULL,
              censor.shape = NULL,
-             censor.size = 4.5
+             censor.size = 4.5,
+             conf.int = NULL
            ))
+  preset_parametric <- append(preset_ggsurv, list(
+    conf.int.km = FALSE
+  ))
   preset_forest <-
     list(
       main = "Hazard ratio",
@@ -38,49 +43,81 @@ get_options <- function(object, prepend = list(), arguments, ...)  {
       refLabel = NULL,
       noDigits = NULL
     )
+  preset_residues <-
+    append(
+      preset_ggpar,
+      list(
+        ylab = NULL,
+        resid = NULL,
+        se = NULL,
+        df = NULL,
+        nsmo = NULL,
+        var = NULL,
+        point.col = NULL,
+        point.size = NULL,
+        point.shape = NULL,
+        point.alpha = NULL,
+        caption = NULL
+      )
+    )
   preset_hazard <-
-    append(preset_default,
+    append(preset_ggpar,
            list(ylab = "Hazard rate"))
 
-  preset <- switch(
-    object,
-    "fit" = preset_ggsurv,
-    "fit.parametric" = preset_ggsurv,
-    "forest" = preset_forest,
-    "hazard" = preset_hazard,
-    list()
+  preset <- list(
+    fit = preset_ggsurv,
+    parametric = preset_parametric,
+    forest = preset_forest,
+    residues = preset_residues,
+    hazard = preset_hazard
   )
 
   ellipsis <- list(...)
 
+  for (type in names(preset)) {
+    preset[[type]] <- .subset_options(preset[[type]], ellipsis, arguments[[type]])
+  }
+
+  return(preset)
+}
+
+
+#' VSD (Sub)Options (Internal)
+#'
+#' Agglutinates preset, ellipsis, and arguments under a graph type
+#'
+#' @param subset Graph-specific preset (and allowed) values
+#' @param ellipsis General arguments
+#' @param subarguments Graph-specific arguments
+#'
+#' @return subset
+.subset_options <- function(subset, ellipsis, subarguments = NULL) {
+
+
   # replaces preset with ellipsis arguments, only if they're already named with presets
-  ellipsis.replace <- ellipsis[names(ellipsis) %in% names(preset)]
-  preset[names(ellipsis.replace)] <- ellipsis.replace
+
+  to_replace <- ellipsis[names(ellipsis) %in% names(subset)]
+  subset[names(to_replace)] <- to_replace
 
   # does the same for the sublist in arguments named after the object
-  if (is.list(arguments) && object %in% names(arguments)) {
-    arguments.object <- arguments[[object]]
-    arguments.replace <-
-      arguments.object[names(arguments.object) %in% names(preset)]
-    preset[names(arguments.replace)] <- arguments.replace
+  if (is.list(subarguments)) {
+    to_replace <- subarguments[names(subarguments) %in% names(subset)]
+    subset[names(to_replace)] <- to_replace
   }
 
-  preset <- append(as.list(prepend), preset)
-
-  # cleanup: main/submain -> title/subtitle
+  # cleanup: main/submain to title/subtitle
   # ggsurv requires it to be title, ggpar allows title by default
-  if (!is.null(preset$main) && "title" %in% names(preset)) {
-    preset$title <- preset$main
-    preset$main <- NULL
+  if (!is.null(subset$main) && "title" %in% names(subset)) {
+    subset$title <- subset$main
+    subset$main <- NULL
   }
-  if (!is.null(preset$submain) && "subtitle" %in% names(preset)) {
-    preset$subtitle <- preset$submain
-    preset$submain <- NULL
+  if (!is.null(subset$submain) && "subtitle" %in% names(subset)) {
+    subset$subtitle <- subset$submain
+    subset$submain <- NULL
   }
 
   # cleanup: remove NULL values
-  preset[sapply(preset, is.null)] <- NULL
+  subset[sapply(subset, is.null)] <- NULL
 
-  # print(preset)
-  return(preset)
+  return(subset)
 }

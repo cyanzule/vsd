@@ -4,7 +4,14 @@
 \alias{vsd}
 \title{Visualizing Survival Data}
 \usage{
-vsd(fit, data = NULL, arguments = list(), interactive = FALSE, ...)
+vsd(
+  fit,
+  data = NULL,
+  arguments = list(),
+  interactive = FALSE,
+  .include = c("fit", "parametric", "forest", "residuals", "hazard"),
+  ...
+)
 }
 \arguments{
 \item{fit}{The estimated survival curve for the model, defaults to a single}
@@ -41,10 +48,8 @@ vsd(survfit(Surv(futime, fustat) ~ rx, data = ovarian))
 
 # coxph (with and without strata)
 vsd(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon))
-vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere,
-            data = colon)))
+vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere, data = colon)))
 
 # parametric models
-vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group,
-                          data = flexsurv::bc, dist = 'gengamma'))
+vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group, data = flexsurv::bc, dist = 'gengamma'))
 }
