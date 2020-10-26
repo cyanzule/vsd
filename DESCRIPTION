@@ -1,14 +1,18 @@
 Package: vsd
 Title: Graphical Shim For Visual Survival Data Analysis
-Version: 0.0.0.9010
+Version: 0.0.0.9011
 Authors@R: 
+    c(person(given = "Ana",
+           family = "Abreu",
+           role = c("aut", "ths"),
+           email = "abreu@staff.uma.pt",
+           comment = c(ORCID = "0000-0002-6155-8492")),
     person(given = "Daniel",
            family = "Camacho",
            role = c("aut", "cre"),
            email = "2016711@student.uma.pt",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+           comment = c(ORCID = "YOUR-ORCID-ID")))
 Description: Provides a shim command for survival analysis graphic generation.
-    This should work with most `survival`...
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -25,6 +29,9 @@ Suggests:
     plotly
 RoxygenNote: 7.1.1
 Collate: 
-    'util.R'
     'options.R'
-    'main.r'
+    'plot_forest.R'
+    'plot_hazard.R'
+    'plot_parametric.R'
+    'util.R'
+    'vsd.R'
