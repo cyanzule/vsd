@@ -19,3 +19,4 @@ subset
 \description{
 Agglutinates preset, ellipsis, and arguments under a graph type
 }
+\keyword{internal}

@@ -5,120 +5,156 @@
 \alias{vsd.formula}
 \alias{vsd.Surv}
 \alias{vsd.coxph}
-\alias{vsd.survfitcox}
 \alias{vsd.survfit}
+\alias{vsd.survfitcox}
 \alias{vsd.flexsurvreg}
 \title{Visualizing Survival Data}
 \usage{
 vsd(
-  fit,
+  model,
   data = NULL,
-  arguments = list(),
-  interactive = FALSE,
+  .interactive = FALSE,
   .include = c("fit", "parametric", "forest", "residuals", "hazard"),
+  .arguments = list(),
   ...
 )
 
 \method{vsd}{formula}(
-  fit,
+  model,
   data = NULL,
-  arguments = list(),
-  interactive = FALSE,
+  .interactive = FALSE,
   .include = c("fit", "hazard"),
+  .arguments = list(),
   ...
 )
 
 \method{vsd}{Surv}(
-  fit,
+  model,
   data = NULL,
-  arguments = list(),
-  interactive = FALSE,
+  .interactive = FALSE,
   .include = c("fit", "hazard"),
+  .arguments = list(),
   ...
 )
 
 \method{vsd}{coxph}(
-  fit,
+  model,
   data = NULL,
-  arguments = list(),
-  interactive = FALSE,
+  .interactive = FALSE,
   .include = c("fit", "forest", "residuals", "hazard"),
-  ...
-)
-
-\method{vsd}{survfitcox}(
-  fit,
-  data = NULL,
-  arguments = list(),
-  interactive = FALSE,
-  .include = c("fit", "forest", "residuals", "hazard"),
+  .arguments = list(),
   ...
 )
 
 \method{vsd}{survfit}(
-  fit,
+  model,
   data = NULL,
-  arguments = list(),
-  interactive = FALSE,
+  .interactive = FALSE,
   .include = c("fit", "hazard"),
+  .arguments = list(),
+  ...
+)
+
+\method{vsd}{survfitcox}(
+  model,
+  data = NULL,
+  .interactive = FALSE,
+  .include = c("fit", "forest", "residuals", "hazard"),
+  .arguments = list(),
   ...
 )
 
 \method{vsd}{flexsurvreg}(
-  fit,
+  model,
   data = NULL,
-  arguments = list(),
-  interactive = FALSE,
+  .interactive = FALSE,
   .include = c("fit", "parametric", "hazard"),
+  .arguments = list(),
   ...
 )
 }
 \arguments{
-\item{fit}{The model, or Surv object, to fit the survival data}
+\item{model}{The survival model, or data structure, to generate graphics from}
 
 \item{data}{Dataframe from where the model fetches its variables, if left
 blank will be extracted from the model, if possible}
 
-\item{arguments}{Collection of list of arguments, indexed by the specific
-type of graph they should be passed to, has priority over \dots}
-
-\item{interactive}{Allows to explore the generated graphs before returning
-(use with \code{'plotly'} for best results)}
+\item{.interactive}{Allows to explore the generated graphs before returning
+(use with \href{https://plotly.com/r/}{plotly} package for best results)}
 
 \item{.include}{Graph types to output if relevant, defaults to all possible}
+
+\item{.arguments}{Collection of list of arguments, indexed by the specific
+type of graph they should be passed to, has priority over \dots}
 
 \item{...}{Miscellaneous arguments, passed to ALL graphs}
 }
 \value{
-A list of graphs, relevant to the model
+A list of ggplot2 graphs and/or list of graphs, relevant to the model
 }
 \description{
-This function tries to guess the best format to render the inputted survival
-data analysis data into a graphically pleasing output.
+This function outputs renders of the inputted survival data analysis data and/or model, and their components, into a graphically pleasing output, under the \link{ggplot2} format.
 }
 \details{
-More info will come here soon.
+Depending on the kind of model passed to the function, the kind of generated graphics might vary, but usually an estimation of the survival and risk curves (depending if the model has covariables) is expected. The kinds of graphics that can be created according to a specific R object are detailed on Usage on \code{.include}'s definition, but non-relevant graphics can be requested without error, as the function ignores them silently.
+
+Extra options for each graph kind can be passed to either all created graphics, by having them as generic arguments, or to specific graphic types, using a list in \code{.arguments}. Arguments are filtered, so that generic arguments aren't applied if a graphic kind wouldn't use them. As an example,\preformatted{vsd(model, data, 
+    .arguments = list(fit = (size = 3, xlab = "Weeks")), 
+    xlab = "Days")
+}
+
+would set all graphics that have an label on the x axis to "Days", except the \code{fit} graph, which would have "Weeks" instead.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{formula}: Wraps \code{Surv ~ (...)} in a survfit object (Kaplan-Meier
+\item \code{formula}: Wraps \code{Surv(...) ~ (...)} in a survfit object (Kaplan-Meier
 model)
 
-\item \code{Surv}: \code{Surv(...)} in a survfit object (Kaplan-Meier
+\item \code{Surv}: Wraps \code{\link[=Surv]{Surv()}} in a survfit object (Kaplan-Meier
 model)
 
 \item \code{coxph}: Wraps \code{coxph(...)} in a survfit object (Kaplan-Meier
 model)
 
-\item \code{survfitcox}: Graphical output for survfit objects (Cox model)
-
 \item \code{survfit}: Graphical output for survfit objects (Kaplan-Meier model)
 
-\item \code{flexsurvreg}: Graphical output for flexsurvreg objects (parametric models)
+\item \code{survfitcox}: Graphical output for survfit objects (Cox model)
+
+\item \code{flexsurvreg}: Graphical output for flexsurvreg objects (various parametric models)
 }}
+
+\section{Generic graphical arguments}{
+Unless specified, all graphics are created under \code{\link[ggpubr:ggpar]{ggpubr::ggpar()}} and have as additional options \code{palette}, \code{main}, \code{submain}, \code{xlab}, \code{ylab}, \code{legend.title} and \code{ggtheme}.
+Most line graphics also allow to set the options \code{size}, \code{linetype}, \code{alpha} and \code{color} to determine line styles, as detailed on \code{\link[survminer:ggsurvplot]{survminer::ggsurvplot()}}.
+\subsection{fit}{
+
+Line graphic, with a further subset of the options present in \code{\link[survminer:ggsurvplot]{survminer::ggsurvplot()}}: \code{censor}, \code{censor.shape}, \code{censor.size}, \code{conf.int}, \code{conf.int.style}.
+}
+
+\subsection{parametric}{
+
+Line graphic, with a further subset of the options present in \code{\link[survminer:ggflexsurvplot]{survminer::ggflexsurvplot()}}: \code{conf.int.km}.
+}
+
+\subsection{forest}{
+
+Non-standard graphic(s), using all options within \code{\link[survminer:ggforest]{survminer::ggforest()}}: \code{main}, \code{cpositions}, \code{fontsize}, \code{refLabel}, \code{noDigits}.
+}
+
+\subsection{residuals}{
+
+Line graphic(s), with a further subset of options present in \code{\link[survminer:ggcoxzph]{survminer::ggcoxzph()}}: \code{resid}, \code{se}, \code{df}, \code{nsmo}, \code{var}, \code{caption}; and point style customization options as \code{point.col}, \code{point.size}, \code{point.shape}, and \code{point.alpha}.
+}
+
+\subsection{hazard}{
+
+Line graphics, using the generic graphical arguments.
+}
+}
 
 \examples{
 # non-models are cohersed into a survfit object with default arguments
+\dontrun{
 vsd(with(aml, Surv(time, status)))
 vsd(Surv(time, status) ~ ph.ecog, data=lung)
 
@@ -127,8 +163,10 @@ vsd(survfit(Surv(futime, fustat) ~ rx, data = ovarian))
 
 # coxph (with and without strata)
 vsd(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon))
+}
 vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere, data = colon)))
 
 # parametric models
-vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group, data = flexsurv::bc, dist = 'gengamma'))
+vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group, data = flexsurv::bc, dist = 'gengamma'), 
+  .include = c("par"))
 }

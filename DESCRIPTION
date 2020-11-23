@@ -1,6 +1,6 @@
 Package: vsd
 Title: Graphical Shim For Visual Survival Data Analysis
-Version: 0.0.0.9011
+Version: 0.1.0.9012
 Authors@R: 
     c(person(given = "Ana",
            family = "Abreu",
@@ -23,10 +23,12 @@ Imports:
     dplyr,
     survminer,
     flexsurv,
+    magrittr,
     ggpubr,
     muhaz
 Suggests:
     plotly
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Collate: 
     'options.R'
@@ -34,4 +36,5 @@ Collate:
     'plot_hazard.R'
     'plot_parametric.R'
     'util.R'
+    'vsd-package.R'
     'vsd.R'

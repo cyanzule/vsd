@@ -4,6 +4,7 @@
 #'
 #' @param arguments Graph-specific arguments
 #' @param ... General arguments
+#' @keywords internal
 #'
 #' @return List of list of graph options
 .options <- function(arguments = list(), ...)  {
@@ -31,6 +32,9 @@
              censor.size = 4.5,
              conf.int = NULL
            ))
+  preset_fit <- append(preset_ggsurv, list(
+    conf.int.style = NULL
+  ))
   preset_parametric <- append(preset_ggsurv, list(
     conf.int.km = FALSE
   ))
@@ -43,13 +47,13 @@
       refLabel = NULL,
       noDigits = NULL
     )
-  preset_residues <-
+  preset_residuals <-
     append(
       preset_ggpar,
       list(
         ylab = NULL,
         resid = NULL,
-        se = NULL,
+        se = F,
         df = NULL,
         nsmo = NULL,
         var = NULL,
@@ -65,10 +69,10 @@
            list(ylab = "Hazard rate"))
 
   preset <- list(
-    fit = preset_ggsurv,
+    fit = preset_fit,
     parametric = preset_parametric,
     forest = preset_forest,
-    residues = preset_residues,
+    residuals = preset_residuals,
     hazard = preset_hazard
   )
 
@@ -89,6 +93,7 @@
 #' @param subset Graph-specific preset (and allowed) values
 #' @param ellipsis General arguments
 #' @param subarguments Graph-specific arguments
+#' @keywords internal
 #'
 #' @return subset
 .subset_options <- function(subset, ellipsis, subarguments = NULL) {

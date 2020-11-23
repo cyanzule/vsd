@@ -1,7 +1,7 @@
 # Generates parametric graph, with KM on the background
 #' @importFrom magrittr %>%
 plot_parametric <-
-  function(fit,
+  function(model,
            km_fit,
            strata = NULL,
            data,
@@ -16,12 +16,12 @@ plot_parametric <-
 
     plots <- list()
 
-    summary <- summary(fit)
+    summary <- summary(model)
     if (!is.factor(strata)) {
       plots$parametric <- do.call(survminer::ggflexsurvplot,
                                   append(
                                     list(
-                                      fit,
+                                      model,
                                       data,
                                       size = size,
                                       alpha = alpha,

@@ -17,3 +17,4 @@ List of list of graph options
 \description{
 Generates lists of lists of options for each graph type, from function call
 }
+\keyword{internal}
