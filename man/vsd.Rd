@@ -93,17 +93,28 @@ type of graph they should be passed to, has priority over \dots}
 A list of ggplot2 graphs and/or list of graphs, relevant to the model
 }
 \description{
-This function outputs renders of the inputted survival data analysis data and/or model, and their components, into a graphically pleasing output, under the \link{ggplot2} format.
+This function outputs renders of the inputted survival data analysis data
+and/or model, and their components, into a graphically pleasing output, under
+the \link{ggplot2} format.
 }
 \details{
-Depending on the kind of model passed to the function, the kind of generated graphics might vary, but usually an estimation of the survival and risk curves (depending if the model has covariables) is expected. The kinds of graphics that can be created according to a specific R object are detailed on Usage on \code{.include}'s definition, but non-relevant graphics can be requested without error, as the function ignores them silently.
+Depending on the kind of model passed to the function, the kind of generated
+graphics might vary, but usually an estimation of the survival and risk
+curves (depending if the model has covariables) is expected. The kinds of
+graphics that can be created according to a specific R object are detailed on
+Usage on \code{.include}'s definition, but non-relevant graphics can be requested
+without error, as the function ignores them silently.
 
-Extra options for each graph kind can be passed to either all created graphics, by having them as generic arguments, or to specific graphic types, using a list in \code{.arguments}. Arguments are filtered, so that generic arguments aren't applied if a graphic kind wouldn't use them. As an example,\preformatted{vsd(model, data, 
-    .arguments = list(fit = (size = 3, xlab = "Weeks")), 
-    xlab = "Days")
+Extra options for each graph kind can be passed to either all created
+graphics, by having them as generic arguments, or to specific graphic types,
+using a list in \code{.arguments}. Arguments are filtered, so that generic
+arguments aren't applied if a graphic kind wouldn't use them. As an example,\preformatted{vsd(model, data, 
+    .arguments = list(fit = (size = 3, xlab = "Weeks")),
+    xlab = "Days") 
 }
 
-would set all graphics that have an label on the x axis to "Days", except the \code{fit} graph, which would have "Weeks" instead.
+would set all graphics that have an label on the x axis to
+"Days", except the \code{fit} graph, which would have "Weeks" instead.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -124,26 +135,36 @@ model)
 }}
 
 \section{Generic graphical arguments}{
-Unless specified, all graphics are created under \code{\link[ggpubr:ggpar]{ggpubr::ggpar()}} and have as additional options \code{palette}, \code{main}, \code{submain}, \code{xlab}, \code{ylab}, \code{legend.title} and \code{ggtheme}.
-Most line graphics also allow to set the options \code{size}, \code{linetype}, \code{alpha} and \code{color} to determine line styles, as detailed on \code{\link[survminer:ggsurvplot]{survminer::ggsurvplot()}}.
+Unless specified, all graphics are created under \code{\link[ggpubr:ggpar]{ggpubr::ggpar()}} and have
+as additional options \code{palette}, \code{main}, \code{submain}, \code{xlab}, \code{ylab},
+\code{legend.title} and \code{ggtheme}. Most line graphics also allow to set the
+options \code{size}, \code{linetype}, \code{alpha} and \code{color} to determine line styles, as
+detailed on \code{\link[survminer:ggsurvplot]{survminer::ggsurvplot()}}.
 \subsection{fit}{
 
-Line graphic, with a further subset of the options present in \code{\link[survminer:ggsurvplot]{survminer::ggsurvplot()}}: \code{censor}, \code{censor.shape}, \code{censor.size}, \code{conf.int}, \code{conf.int.style}.
+Line graphic, with a further subset of the options present in
+\code{\link[survminer:ggsurvplot]{survminer::ggsurvplot()}}: \code{censor}, \code{censor.shape}, \code{censor.size},
+\code{conf.int}, \code{conf.int.style}.
 }
 
 \subsection{parametric}{
 
-Line graphic, with a further subset of the options present in \code{\link[survminer:ggflexsurvplot]{survminer::ggflexsurvplot()}}: \code{conf.int.km}.
+Line graphic, with a further subset of the options present in
+\code{\link[survminer:ggflexsurvplot]{survminer::ggflexsurvplot()}}: \code{conf.int.km}.
 }
 
 \subsection{forest}{
 
-Non-standard graphic(s), using all options within \code{\link[survminer:ggforest]{survminer::ggforest()}}: \code{main}, \code{cpositions}, \code{fontsize}, \code{refLabel}, \code{noDigits}.
+Non-standard graphic(s), using all options within \code{\link[survminer:ggforest]{survminer::ggforest()}}:
+\code{main}, \code{cpositions}, \code{fontsize}, \code{refLabel}, \code{noDigits}.
 }
 
 \subsection{residuals}{
 
-Line graphic(s), with a further subset of options present in \code{\link[survminer:ggcoxzph]{survminer::ggcoxzph()}}: \code{resid}, \code{se}, \code{df}, \code{nsmo}, \code{var}, \code{caption}; and point style customization options as \code{point.col}, \code{point.size}, \code{point.shape}, and \code{point.alpha}.
+Line graphic(s), with a further subset of options present in
+\code{\link[survminer:ggcoxzph]{survminer::ggcoxzph()}}: \code{resid}, \code{se}, \code{df}, \code{nsmo}, \code{var}, \code{caption}; and
+point style customization options as \code{point.col}, \code{point.size},
+\code{point.shape}, and \code{point.alpha}.
 }
 
 \subsection{hazard}{
@@ -167,6 +188,6 @@ vsd(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon))
 vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere, data = colon)))
 
 # parametric models
-vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group, data = flexsurv::bc, dist = 'gengamma'), 
+vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group, data = flexsurv::bc, dist = 'gengamma'),
   .include = c("par"))
 }

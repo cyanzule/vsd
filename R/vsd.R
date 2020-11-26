@@ -1,7 +1,3 @@
-#' @include options.R
-#' @include util.R
-NULL
-
 #' Visualizing Survival Data
 #'
 #' This function outputs renders of the inputted survival data analysis data
@@ -19,8 +15,12 @@ NULL
 #' graphics, by having them as generic arguments, or to specific graphic types,
 #' using a list in `.arguments`. Arguments are filtered, so that generic
 #' arguments aren't applied if a graphic kind wouldn't use them. As an example,
-#' ``` vsd(model, data, .arguments = list(fit = (size = 3, xlab = "Weeks")),
-#' xlab = "Days") ``` would set all graphics that have an label on the x axis to
+#' ``` 
+#' vsd(model, data, 
+#'     .arguments = list(fit = (size = 3, xlab = "Weeks")),
+#'     xlab = "Days") 
+#' ``` 
+#' would set all graphics that have an label on the x axis to
 #' "Days", except the `fit` graph, which would have "Weeks" instead.
 #'
 #' # Generic graphical arguments
