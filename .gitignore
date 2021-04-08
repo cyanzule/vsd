@@ -43,3 +43,7 @@ docs/
 
 # translation temp files
 po/*~
+
+
+# release files
+cran-comments.md

@@ -4,17 +4,17 @@
 \name{vsd-package}
 \alias{vsd-package}
 \alias{_PACKAGE}
-\title{vsd: Graphical Shim For Visual Survival Data Analysis}
+\title{vsd: Graphical Shim for Visual Survival Data Analysis}
 \description{
 Provides a shim command for survival analysis graphic generation.
 }
 \details{
 The only function you're likely to need is \link{vsd}, all other
-functions are either private or subfunctions that shouldn't be called
+functions are either private or ones that shouldn't be called
 directly.
 }
 \author{
-\strong{Maintainer}: Daniel Camacho \email{2016711@student.uma.pt} (\href{https://orcid.org/YOUR-ORCID-ID}{ORCID})
+\strong{Maintainer}: Daniel Camacho \email{2016711@student.uma.pt} (\href{https://orcid.org/0000-0002-4980-9391}{ORCID})
 
 Authors:
 \itemize{
