@@ -75,22 +75,16 @@
 #' @return A list of ggplot2 graphs and/or list of graphs, relevant to the model
 #' 
 #' @examples
-#' \dontrun{
 #' # non-models are cohersed into a survfit object with default arguments
-#' vsd(with(aml, Surv(time, status)))
-#' vsd(Surv(time, status) ~ ph.ecog, data=lung)
-#'
-#' # survival fit model
-#' vsd(survfit(Surv(futime, fustat) ~ rx, data = ovarian))
-#'
+#' vsd(Surv(time, status) ~ ph.ecog, data=lung, .include = c("fit", "haz"))
+#' 
 #' # coxph (with and without strata)
-#' vsd(coxph(Surv(time, status) ~ sex + rx + adhere, data = colon))
-#' vsd(survfit(coxph(Surv(time, status) ~ sex + strata(rx) + adhere, data = colon)))
+#' vsd(coxph(Surv(time, status) ~ sex + strata(rx) + adhere, data = colon), .include = c("res"))
 #'
 #' # parametric models
 #' vsd(flexsurv::flexsurvreg(Surv(rectime, censrec) ~ group, data = flexsurv::bc, dist = 'gengamma'),
 #'   .include = c("par"))
-#' }
+#' 
 vsd <- function(model,
                 data = NULL,
                 .interactive = FALSE,
